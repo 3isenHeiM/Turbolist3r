@@ -860,11 +860,24 @@ class CrtSearch(enumratorBaseThreaded):
             links = link_regx.findall(resp)
             for link in links:
                 subdomain = link.strip()
+                
                 if not subdomain.endswith(self.domain) or '*' in subdomain:
                     continue
 
                 if '@' in subdomain:
                     subdomain = subdomain[subdomain.find('@') + 1:]
+                
+                # Sometimes the certificate records contains multiple subdomains
+                # splitter with a "<BR>". We'll split them, and append it to the 
+                # list of subdomain
+                possibleBR = re.split('<BR>',subdomain)
+                # If more than 1 element, ie there is '<BR>' in the recode
+                if len(possibleBR) > 1 :
+                    # Append the remaining subdomain to the list
+                    links.extend(possibleBR[1:])
+                    # Set the 1st element as the current one
+                    subdomain = possibleBR[1]
+
 
                 if subdomain not in self.subdomains and subdomain != self.domain:
                     if self.verbose:
