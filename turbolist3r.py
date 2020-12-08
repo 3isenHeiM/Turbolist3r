@@ -515,6 +515,7 @@ class BaiduEnum(enumratorBaseThreaded):
 
     def extract_domains(self, resp):
         found_newdomain = False
+        links = []
         subdomain_list = []
         link_regx = re.compile('<a.*?class="c-showurl".*?>(.*?)</a>')
         try:
